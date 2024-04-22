@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head xmlns="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <title>Compressive Concrete Strength Predictor</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+
+</head>
+
+<body class="bg-dark">
+
+    <div class="container">
+        <div class="row">
+            <div class="card mt-50" style="width: 100%; height: 100%">
+                <div class="card-header" style="text-align: center">
+                    <h2>Welcome to the Compressive Concrete Strength Predictor</h2>
+                </div>
+                <div class="card-body">
+                    <div class="col-12" style="text-align: left">
+                        <h6>This application predicts the concrete compressive strength of a concrete mould using Random
+                            Forest model with 100 trees of maximum depth 9.</h6>
+                        <h6>A detailed in-depth jupyter notebook is available <a
+                                href="https://github.com/waitasecant/Concrete-Compressive-Strength-Prediction/blob/main/Concrete_Compressive_Strength.ipynb">here!</a>
+                            More on this project is given <a
+                                href=https://sites.google.com/view/waitasecant/projects/concrete-strength> here</a>.
+                            Contact me at <a href="mailto:waitasecant@gmail.com">waitasecant@gmail.com</a>
+                        </h6>
+                    </div>
+                    <br>
+                    <form method="post" accept-charset="utf-8" name="Modelform" style="text-align: center">
+                        <div class="col-md-12 form-group" style="text-align: left">
+                            <label>
+                                <h5>Enter the amount of Cement</h5>
+                            </label><br>
+                            <input type="text" class="form-control" id="Cement" name="Cement"
+                                placeholder="Enter units in kg in a m3 mixture">
+                        </div>
+                        <div class="col-md-12 form-group" style="text-align: left">
+                            <label>
+                                <h5>Enter the amount of Blast Furnace Slag</h5>
+                            </label><br>
+                            <input type="text" class="form-control" id="Blast_Furnace_Slag" name="Blast_Furnace_Slag"
+                                placeholder="Enter units in kg in a m3 mixture">
+                        </div>
+                        <div class="col-md-12 form-group" style="text-align: left">
+                            <label>
+                                <h5>Enter the amount of Fly Ash</h5>
+                            </label><br>
+                            <input type="text" class="form-control" id="Fly_Ash" name="Fly_Ash"
+                                placeholder="Enter units in kg in a m3 mixture">
+                        </div>
+                        <div class="col-md-12 form-group" style="text-align: left">
+                            <label>
+                                <h5>Enter the amount of Super Plasticizer</h5>
+                            </label><br>
+                            <input type="text" class="form-control" id="Superplasticizer" name="Superplasticizer"
+                                placeholder="Enter units in kg in a m3 mixture">
+                        </div>
+                        <div class="col-md-12 form-group" style="text-align: left">
+                            <label>
+                                <h5>Enter the amount of Age</h5>
+                            </label><br>
+                            <input type="text" class="form-control" id="Age" name="Age"
+                                placeholder="Enter units in days">
+                        </div>
+                        <div class="col-md-12 form-group" style="text-align: center">
+                            <button class="btn btn-primary form-control" onclick="send_data()">Predict strength</button>
+                        </div>
+                    </form>
+                    <br>
+                    <div class="row">
+                        <div class="col-12" style="text-align: center">
+                            <h4><span id="prediction"></span></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        function form_handler(event) {
+            event.preventDefault(); // Don't submit the form normally
+        }
+        function send_data() {
+            document.querySelector('form').addEventListener("submit", form_handler);
+
+            var fd = new FormData(document.querySelector('form'));
+
+            var xhr = new XMLHttpRequest({ mozSystem: true });
+
+            xhr.open('POST', '/predict', true);
+            document.getElementById('prediction').innerHTML = "Wait! Predicting...";
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    document.getElementById('prediction').innerHTML = "Predicted Concrete Compressive Strength is " + xhr.responseText + " MPa";
+
+                }
+            };
+
+            xhr.onload = function () { };
+
+            xhr.send(fd);
+        }
+    </script>
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
